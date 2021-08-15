@@ -1,0 +1,265 @@
+<!-- co-developed with OpenAI Codex -->
+<html>
+    <head>
+        <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+var canvas = document.createElement('canvas');
+canvas.width = 800;
+canvas.height = 600;
+document.body.appendChild(canvas);
+
+canvas.style.backgroundColor = 'black';
+
+var ctx = canvas.getContext('2d');
+var colors = ['red', 'green', 'blue', 'yellow', 'orange', 'purple', 'white'];
+var circles = [];
+for (var i = 0; i < 10; i++) {
+  var circle = {
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    radius: Math.random() * 10 + 5,
+    color: colors[Math.floor(Math.random() * colors.length)]
+  };
+  circles.push(circle);
+  ctx.beginPath();
+  ctx.arc(circle.x, circle.y, circle.radius, 0, Math.PI * 2, true);
+  ctx.closePath();
+  ctx.fillStyle = circle.color;
+  ctx.fill();
+}
+
+var animate = function() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  for (var i = 0; i < circles.length; i++) {
+    var circle = circles[i];
+    circle.x += Math.random() * 2 - 1;
+    circle.y += Math.random() * 2 - 1;
+    if (circle.x < 0) {
+      circle.x = 0;
+      circle.x += Math.random() * 50 - 1;
+      circles[i].color = 'orange';
+    }
+    if (circle.x > canvas.width) {
+      circle.x = canvas.width;
+      circle.x -= Math.random() * 50 - 1;
+      circles[i].color = 'orange';
+    }
+    if (circle.y < 0) {
+      circle.y = 0;
+      circle.y += Math.random() * 50 - 1;
+      circles[i].color = 'orange';
+    }
+    if (circle.y > canvas.height) {
+      circle.y = canvas.height;
+      circle.y -= Math.random() * 50 - 1;
+      circles[i].color = 'orange';
+    }
+    ctx.beginPath();
+    ctx.arc(circle.x, circle.y, circle.radius, 0, Math.PI * 2, true);
+    ctx.closePath();
+    ctx.fillStyle = circle.color;
+    ctx.fill();
+  }
+  requestAnimationFrame(animate);
+};
+animate();
+
+document.documentElement.style.fontFamily = 'Comic Sans MS';
+
+var modeButton = document.createElement('button');
+modeButton.innerHTML = 'Mode';
+modeButton.style.position = 'absolute';
+modeButton.style.right = '10px';
+modeButton.style.top = '10px';
+document.body.appendChild(modeButton);
+
+modeButton.style.fontFamily = 'Comic Sans MS !important';
+document.querySelectorAll('input, button, select, textarea').forEach(function(element) {
+  element.style.fontFamily = 'Comic Sans MS !important';
+});
+
+modeButton.style.fontFamily = 'Verdana';
+
+var modalValue = document.createElement('div');
+modalValue.innerHTML = 'Modal Value';
+modalValue.style.position = 'absolute';
+modalValue.style.right = '10px';
+modalValue.style.top = '50px';
+document.body.appendChild(modalValue);
+
+canvas.addEventListener('click', function(e) {
+  if (modalValue.innerHTML === 'Suck') {
+    var mouseX = e.pageX - canvas.offsetLeft;
+    var mouseY = e.pageY - canvas.offsetTop;
+    for (var i = 0; i < circles.length; i++) {
+      var circle = circles[i];
+      var dx = mouseX - circle.x;
+      var dy = mouseY - circle.y;
+      var distance = Math.sqrt(dx * dx + dy * dy);
+      if (distance < 100) {
+        circle.radius *= 0.5;
+        circle.x += dx * 0.5;
+        circle.y += dy * 0.5;
+      }
+    }
+  }
+});
+
+canvas.addEventListener('click', function(e) {
+  if (modalValue.innerHTML === 'Blow') {
+    var mouseX = e.pageX - canvas.offsetLeft;
+    var mouseY = e.pageY - canvas.offsetTop;
+    for (var i = 0; i < circles.length; i++) {
+      var circle = circles[i];
+      var dx = mouseX - circle.x;
+      var dy = mouseY - circle.y;
+      var distance = Math.sqrt(dx * dx + dy * dy);
+      if (distance < 100) {
+        circle.x -= dx * 0.5;
+        circle.y -= dy * 0.5;
+      }
+    }
+  }
+});
+
+modeButton.addEventListener('click', function() {
+  if (modalValue.innerHTML === 'Suck') {
+    modalValue.innerHTML = 'Blow';
+  } else {
+    modalValue.innerHTML = 'Suck';
+  }
+});
+
+var score = 0;
+var scoreDisplay = document.createElement('div');
+scoreDisplay.innerHTML = 'Score: ' + score;
+scoreDisplay.style.position = 'absolute';
+scoreDisplay.style.right = '10px';
+scoreDisplay.style.top = '70px';
+document.body.appendChild(scoreDisplay);
+
+var updateScore = function() {
+  scoreDisplay.innerHTML = 'Score: ' + score;
+};
+
+var removeCircles = function() {
+  for (var i = 0; i < circles.length; i++) {
+    var circle = circles[i];
+    if (circle.radius < 2) {
+      if (circle.color === 'orange') {
+        score -= 5;
+      } else {
+        score += 10;
+      }
+      circles.splice(i, 1);
+      i--;
+    }
+  }
+  updateScore();
+};
+
+setInterval(removeCircles, 100);
+
+modalValue.innerHTML = 'Blow';
+
+var circleCount = document.createElement('div');
+circleCount.innerHTML = 'Circles: ' + circles.length;
+circleCount.style.position = 'absolute';
+circleCount.style.right = '10px';
+circleCount.style.top = '90px';
+document.body.appendChild(circleCount);
+
+var orangeCount = document.createElement('div');
+orangeCount.innerHTML = 'Orange Circles: ' + circles.filter(function(circle) {
+  return circle.color === 'orange';
+}).length;
+orangeCount.style.position = 'absolute';
+orangeCount.style.right = '10px';
+orangeCount.style.top = '110px';
+document.body.appendChild(orangeCount);
+
+setInterval(function() {
+  circleCount.innerHTML = 'Circles: ' + circles.length;
+  orangeCount.innerHTML = 'Orange Circles: ' + circles.filter(function(circle) {
+    return circle.color === 'orange';
+  }).length;
+}, 100);
+
+setInterval(function() {
+  if (circles.length === circles.filter(function(circle) {
+    return circle.color === 'orange';
+  }).length) {
+    gameOver();
+  }
+}, 100);
+
+var restartButton = document.createElement('button');
+restartButton.innerHTML = 'Restart';
+restartButton.style.position = 'absolute';
+restartButton.style.right = '10px';
+restartButton.style.top = '130px';
+document.body.appendChild(restartButton);
+
+restartButton.addEventListener('click', function() {
+  circles = [];
+  score = 0;
+  updateScore();
+  restartButton.style.border = "1px solid black";
+});
+
+restartButton.addEventListener('click', function() {
+  for (var i = 0; i < 10; i++) {
+    var circle = {
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      radius: Math.random() * 10 + 5,
+      color: colors[Math.floor(Math.random() * colors.length)]
+    };
+    circles.push(circle);
+    ctx.beginPath();
+    ctx.arc(circle.x, circle.y, circle.radius, 0, Math.PI * 2, true);
+    ctx.closePath();
+    ctx.fillStyle = circle.color;
+    ctx.fill();
+  }
+  updateScore();
+});
+
+var gameOver = function() {
+  var gameOverMessage = document.createElement('div');
+  gameOverMessage.innerHTML = 'Game Over! Score: ' + score;
+  gameOverMessage.style.position = 'absolute';
+  gameOverMessage.style.left = '50%';
+  gameOverMessage.style.top = '50%';
+  gameOverMessage.style.transform = 'translate(-50%, -50%)';
+  gameOverMessage.style.fontFamily = 'Comic Sans MS';
+  gameOverMessage.style.fontSize = '50px';
+  gameOverMessage.style.color = 'blue';
+  document.body.appendChild(gameOverMessage);
+  restartButton.style.display = 'block';
+  restartButton.style.border = "1px solid orange";
+};
+
+modeButton.style.left = canvas.offsetLeft + canvas.offsetWidth + 10 + 'px';
+modalValue.style.left = canvas.offsetLeft + canvas.offsetWidth + 10 + 'px';
+circleCount.style.left = canvas.offsetLeft + canvas.offsetWidth + 10 + 'px';
+orangeCount.style.left = canvas.offsetLeft + canvas.offsetWidth + 10 + 'px';
+
+modeButton.style.fontFamily = 'Verdana';
+restartButton.style.fontFamily = 'Verdana';
+
+modeButton.addEventListener('click', function() {
+  if (modalValue.innerHTML === 'Blow') {
+    modeButton.innerHTML = 'VACUUM ENABLED - Switch to Blow';
+  } else {
+    modeButton.innerHTML = 'BLOWER ENABLED - Switch to Suck';
+  }
+});
+
+
+});
+        </script>
+    </head>
+  
+</html>
